@@ -1,0 +1,38 @@
+import com.artemnizhnyk.task.ReleaseTask
+
+plugins {
+    id 'java-library'
+    id 'jacoco'
+    id 'custom-artemnizhnyk'
+}
+
+group = 'com.artemnizhnyk'
+version = 'unspecified'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api project(":database")
+
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    maxParallelForks 3
+    useJUnitPlatform()
+}
+test.finalizedBy jacocoTestReport
+jacocoTestReport.dependsOn test
+
+ext {
+    release = false
+}
+
+task makeRelease(type: ReleaseTask) {
+    release = project.release
+    releaseFile = new File("$rootDir/script.gradle")
+}
+

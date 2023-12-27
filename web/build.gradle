@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group = 'com.artemnizhnyk'
+version = 'unspecified'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(":service")
+    implementation project(":common:util")
+
+    compileOnly "jakarta.servlet:jakarta.servlet-api:6.0.0"
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+war {
+    setArchiveBaseName "artemnizhnyk"
+}
+
+task deployTomcat(type: Copy) {
+    from(war.archiveFile.get())
+    into("G:\\Tomcat\\apache-tomcat-10.1.15\\webapps")
+}
+deployTomcat.dependsOn war
+assemble.dependsOn deployTomcat
